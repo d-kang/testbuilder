@@ -24,16 +24,30 @@ network["MasterCard"] = {};
 network["MasterCard"].prefix = ['51', '52', '53', '54', '55' ];
 network["MasterCard"].length = [16];
 
+network["Discover"] = {};
+network["Discover"].prefix = ['6011', '644', '645', '646', '647', '648', '649', '65']
+network["Discover"].length = [16, 19]
+
+network["Maestro"] = {};
+network["Maestro"].prefix = ['5018', '5020', '5038', '6304']
+network["Maestro"].length = [12, 13, 14, 15, 16, 17, 18, 19]
 
 
 var detectNetwork = function(cardNumber) {
   let len = cardNumber.length;
   for (let key in network) {
-    let prefix = cardNumber.slice(0, network[key].prefix[0].length)
+    let isKey = network[key].prefix.some(function(pref) {
+      return cardNumber.startsWith(pref) && network[key].length.includes(len);
+    })
 
-    if (network[key].prefix.includes(prefix) && network[key].length.includes(len)) {
+    if (isKey) {
       return key;
     }
+    // let prefix = cardNumber.slice(0, network[key].prefix[0].length)
+    //
+    // if (network[key].prefix.includes(prefix) && network[key].length.includes(len)) {
+    //   return key;
+    // }
   }
 };
 
