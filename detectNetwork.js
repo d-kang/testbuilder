@@ -32,9 +32,27 @@ network["Maestro"] = {};
 network["Maestro"].prefix = ['5018', '5020', '5038', '6304']
 network["Maestro"].length = [12, 13, 14, 15, 16, 17, 18, 19]
 
+// 622126-622925, 624-626, or 6282-6288
+network["China UnionPay"] = {};
+network["China UnionPay"].prefix = []
+network["China UnionPay"].length = [16, 17, 18, 19]
+
+
+network["Switch"] = {};
+network["Switch"].prefix = ['4903', '4905', '4911', '4936', '564182', '633110', '6333', '6759']
+network["Switch"].length = [16, 18, 19]
+
+
 
 var detectNetwork = function(cardNumber) {
   let len = cardNumber.length;
+  // edge case for Switch
+  if (cardNumber.startsWith('49') && length === 16) {
+    if (network["Switch"].prefix.includes(cardNumber.slice(0, 4))) {
+      return 'Switch';
+    }
+  }
+
   for (let key in network) {
     let isKey = network[key].prefix.some(function(pref) {
       return cardNumber.startsWith(pref) && network[key].length.includes(len);
@@ -43,11 +61,6 @@ var detectNetwork = function(cardNumber) {
     if (isKey) {
       return key;
     }
-    // let prefix = cardNumber.slice(0, network[key].prefix[0].length)
-    //
-    // if (network[key].prefix.includes(prefix) && network[key].length.includes(len)) {
-    //   return key;
-    // }
   }
 };
 
@@ -64,3 +77,14 @@ console.log(detectNetwork('5212345678901234')); // (MasterCard)
 console.log(detectNetwork('5312345678901234')); // (MasterCard)
 console.log(detectNetwork('5412345678901234')); // (MasterCard)
 console.log(detectNetwork('5512345678901234')); // (MasterCard)
+
+
+// STEP FOUR:
+// Excellent work! Write your own tests and make them pass for the last two networks:
+//
+// China UnionPay always has a prefix of 622126-622925, 624-626, or 6282-6288 and a length of 16-19.
+// Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
+//
+// Heads up! Switch and Visa seem to have some overlapping card numbers - in any apparent conflict, you should choose the network with the longer prefix.
+//
+// When detectNetwork returns the correct network for every prefix and length combination for Diner's Club, American Express, Visa, MasterCard, Discover, Maestro, China UnionPay, and Switch you can invoke nextStep:
