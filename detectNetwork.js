@@ -32,35 +32,42 @@ network["Maestro"] = {};
 network["Maestro"].prefix = ['5018', '5020', '5038', '6304']
 network["Maestro"].length = [12, 13, 14, 15, 16, 17, 18, 19]
 
-// 622126-622925, 624-626, or 6282-6288
-network["China UnionPay"] = {};
-network["China UnionPay"].prefix = []
-network["China UnionPay"].length = [16, 17, 18, 19]
-
-
 network["Switch"] = {};
 network["Switch"].prefix = ['4903', '4905', '4911', '4936', '564182', '633110', '6333', '6759']
 network["Switch"].length = [16, 18, 19]
 
+// 622126-622925, 624-626, or 6282-6288
+network["China UnionPay"] = {};
+network["China UnionPay"].prefix = [[622126, 622925], [624, 626], [6282, 6288]]
+network["China UnionPay"].length = [16, 17, 18, 19]
 
 
 var detectNetwork = function(cardNumber) {
   let len = cardNumber.length;
+  let isSwitchLen = (len === 16 ? true : len === 18 ? true : len === 19 ? true : false);
   // edge case for Switch
-  if (cardNumber.startsWith('49') && length === 16) {
+  if (cardNumber.startsWith('49') && isSwitchLen) {
     if (network["Switch"].prefix.includes(cardNumber.slice(0, 4))) {
       return 'Switch';
     }
   }
-
+  // network["China UnionPay"].prefix = [[622126, 622925], [624, 626], [6282, 6288]]
+  // network["China UnionPay"].length = [16, 17, 18, 19]
   for (let key in network) {
     let isKey = network[key].prefix.some(function(pref) {
-      return cardNumber.startsWith(pref) && network[key].length.includes(len);
+      if (!Array.isArray(pref)) {
+        return network[key].length.includes(len) && cardNumber.startsWith(pref);
+      } else {
+        // to handle china union pay
+        var prefixLength = String(pref[0]).length;
+        var cardPrefix = cardNumber.slice(0, prefixLength);
+        var cardPrefixToNum = Number(cardPrefix);
+        var doesPrefixMatch = cardPrefixToNum >= pref[0] && cardPrefixToNum <=pref[1]
+        return doesPrefixMatch && network[key].length.includes(len);
+      }
     })
 
-    if (isKey) {
-      return key;
-    }
+    if (isKey) return key;
   }
 };
 
