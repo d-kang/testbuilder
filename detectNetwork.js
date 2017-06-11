@@ -63,6 +63,10 @@ var detectNetwork = function(cardNumber) {
         var cardPrefix = cardNumber.slice(0, prefixLength);
         var cardPrefixToNum = Number(cardPrefix);
         var doesPrefixMatch = cardPrefixToNum >= pref[0] && cardPrefixToNum <=pref[1]
+
+        // console.log('cardNumber', cardNumber, cardNumber.length);
+        // console.log('network[key].length.includes(len)', network[key].length.includes(len), len);
+        // console.log('doesPrefixMatch', doesPrefixMatch);
         return doesPrefixMatch && network[key].length.includes(len);
       }
     })

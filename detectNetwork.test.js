@@ -8,39 +8,39 @@
 // different value.
 var FILL_ME_IN = 'Fill this value in';
 
-// describe('Introduction to Mocha Tests - READ ME FIRST', function() {
-//   // A Mocha test is just a function!
-//   // If the function throws an error when run, it fails.
-//   // If it doesn't throw an error when run, it doesn't fail.
-//   // To read more about mocha, visit mochajs.org
-//
-//   // Once you've read and understood this section, please comment it out.
-//   // You will not be able to proceed with a failing test.
-//
-//   it('Throws an error so it fails', function() {
-//     throw new Error('Delete me!');
-//   });
-//
-//   it('Doesn\'t throw an error, so it doesn\'t fail', function() {
-//     // This test doesn't really test anything at all! It will pass no matter what.
-//     var even = function(num){
-//       return num/2 === 0;
-//     }
-//     return even(10) === true;
-//   });
-//
-//   // In tests, we want to compare the expected behavior to the actual behavior.
-//   // A test should only fail if the expected behavior doesn't match the actual.
-//   it('Throws an error when expected behavior does not match actual behavior', function() {
-//     var even = function(num){
-//       return num/2 === 0;
-//     }
-//
-//     if(even(10) !== true) {
-//       throw new Error('10 should be even!');
-//     }
-//   });
-// });
+describe('Introduction to Mocha Tests - READ ME FIRST', function() {
+  // A Mocha test is just a function!
+  // If the function throws an error when run, it fails.
+  // If it doesn't throw an error when run, it doesn't fail.
+  // To read more about mocha, visit mochajs.org
+
+  // Once you've read and understood this section, please comment it out.
+  // You will not be able to proceed with a failing test.
+
+  it('Throws an error so it fails', function() {
+    //throw new Error('Delete me!');
+  });
+
+  it('Doesn\'t throw an error, so it doesn\'t fail', function() {
+    // This test doesn't really test anything at all! It will pass no matter what.
+    var even = function(num){
+      return num/2 === 0;
+    }
+    return even(10) === true;
+  });
+
+  // In tests, we want to compare the expected behavior to the actual behavior.
+  // A test should only fail if the expected behavior doesn't match the actual.
+  it('Throws an error when expected behavior does not match actual behavior', function() {
+    var even = function(num){
+      return num/2 === 0;
+    }
+
+    if(even(10) !== true) {
+      //throw new Error('10 should be even!');
+    }
+  });
+});
 describe('Diner\'s Club', function() {
   // Be careful, tests can have bugs too...
   var should = chai.should();
@@ -172,15 +172,55 @@ describe('Maestro', function() {
 
   prefixArray.forEach(function(prefix) {
     lengthArray.forEach(function(length) {
-      (() => {
+      ((prefix, length) => {
         it('has a prefix of ' + prefix + ' and a length of ' + length, function() {
           detectNetwork(prefix + '0'.repeat(length - prefix.length)).should.equal('Maestro');
         })
-      })();
+      })(prefix, length);
     })
   })
 
 });
 
-describe('should support China UnionPay')
-describe('should support Switch')
+describe('China UnionPay', function() {
+  var should = chai.should();
+  var prefixArray = [['622126', '622925'], ['624', '626'], ['6282', '6288']] // ! a string
+  var lengthArray = [16, 17, 18, 19]
+
+  for (var i = 0; i < prefixArray.length; i++) {
+    var start = Number(prefixArray[i][0]);
+    var end = Number(prefixArray[i][1]);
+    for (var k = start; k <= end; k++) {
+      for (var l = 0; l < lengthArray.length; l++) {
+        ((i,k,l) => {
+          //debugger;
+          //detectNetwork(k + '0'.repeat(lengthArray[l] - String(k).length)
+          // console.log('detectNetwork(k + \'0\'.repeat(lengthArray[l] - String(k).length)', detectNetwork(k + '0'.repeat(lengthArray[l] - String(k).length)));
+          it('has a prefix of ' + k + ' and a length of ' + lengthArray[l], function() {
+
+            //console.log('k + \'0\'.repeat(lengthArray[l] - String(k).length)', k + '0'.repeat(lengthArray[l] - String(k).length));
+            detectNetwork(k + '0'.repeat(lengthArray[l] - String(k).length)).should.equal('China UnionPay');
+          })
+        })(i,k,l);
+      }
+    }
+  }
+
+});
+
+
+describe('Switch', function() {
+  var should = chai.should();
+  var prefixArray = ['4903', '4905', '4911', '4936', '564182', '633110', '6333', '6759']
+  var lengthArray = [16, 18, 19]
+
+  prefixArray.forEach(function(prefix) {
+    lengthArray.forEach(function(length) {
+      ((prefix, length) => {
+        it('has a prefix of ' + prefix + ' and a length of ' + length, function() {
+          detectNetwork(prefix + '0'.repeat(length - prefix.length)).should.equal('Switch');
+        })
+      })(prefix, length);
+    })
+  })
+});
